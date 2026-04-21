@@ -2,76 +2,98 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, ClipboardList, BarChart3, LogOut, User as UserIcon } from 'lucide-react';
-
-const navItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'User', href: '/user', icon: Users },
-  { name: 'Audit Logs', href: '/audit-logs', icon: ClipboardList },
-  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-];
+import { 
+  LayoutDashboard, 
+  Users, 
+  ClipboardList, 
+  BarChart3, 
+  LogOut,
+  UserCircle
+} from 'lucide-react';
+import { useRole } from '../lib/store';
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const { role, permissions } = useRole();
+
+  const menuItems = [
+    { 
+      name: 'Dashboard', 
+      icon: <LayoutDashboard size={24} />, 
+      path: '/dashboard',
+      visible: permissions.sidebar.dashboard 
+    },
+    { 
+      name: 'User', 
+      icon: <Users size={24} />, 
+      path: '/user',
+      visible: permissions.sidebar.user
+    },
+    { 
+      name: 'Audit Logs', 
+      icon: <ClipboardList size={24} />, 
+      path: '/audit-logs',
+      visible: permissions.sidebar.auditLogs
+    },
+    { 
+      name: 'Analytics', 
+      icon: <BarChart3 size={24} />, 
+      path: '/analytics',
+      visible: permissions.sidebar.analytics
+    },
+  ];
 
   return (
-    <aside className="fixed inset-y-0 left-0 flex h-full w-[280px] flex-col bg-[#0F172A] text-white">
-      {/* Logo Area */}
-      <div className="flex items-center gap-3 p-8 pt-10">
-        <div className="relative w-12 h-12">
-          <Image 
-            src="/kcsp.png" 
-            alt="KCSP Logo" 
-            fill
-            className="object-contain brightness-110"
-          />
+    <aside className="fixed left-0 top-0 h-screen w-[280px] bg-[#0F172A] text-white flex flex-col z-40">
+      {/* Brand Identity */}
+      <div className="p-8 flex items-center gap-3">
+        <div className="h-10 w-10 bg-white/10 rounded-lg flex items-center justify-center">
+           <img src="/kcsp.png" alt="KCSP Logo" className="h-8 w-8 object-contain" />
         </div>
         <div className="flex flex-col">
-          <span className="text-2xl font-bold tracking-tight leading-tight">KCSP</span>
-          <span className="text-sm font-normal text-gray-400">RoPA</span>
+          <span className="text-xl font-bold tracking-tight">KCSP</span>
+          <span className="text-xs text-gray-400 font-medium">RoPA</span>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-2 px-4 mt-6">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
-          
-          return (
+      {/* Navigation Links */}
+      <nav className="flex-1 px-4 py-6 space-y-2">
+        {menuItems.map((item) => (
+          item.visible && (
             <Link
               key={item.name}
-              href={item.href}
-              className={`flex items-center gap-4 rounded-xl px-4 py-3.5 transition-all duration-200 ${
-                isActive
-                  ? 'bg-[#1E293B] text-blue-400 border-l-4 border-blue-500 rounded-l-none'
-                  : 'text-gray-400 hover:bg-[#1E293B] hover:text-white'
+              href={item.path}
+              className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                pathname === item.path
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                  : 'text-gray-400 hover:bg-white/5 hover:text-white'
               }`}
             >
-              <Icon size={24} />
+              <span className={`${pathname === item.path ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
+                {item.icon}
+              </span>
               <span className="text-lg font-medium">{item.name}</span>
             </Link>
-          );
-        })}
+          )
+        ))}
       </nav>
 
-      {/* Footer / User Profile */}
-      <div className="mt-auto border-t border-gray-800 p-6 space-y-6">
+      {/* Footer: User Profile & Logout */}
+      <div className="p-6 mt-auto border-t border-white/5 space-y-4">
         <div className="flex items-center gap-4 px-2">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-700 text-white overflow-hidden">
-             <UserIcon size={28} />
+          <div className="h-12 w-12 rounded-full border-2 border-white/20 flex items-center justify-center bg-white/5">
+            <UserCircle size={32} className="text-gray-400" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-medium leading-tight">หัวหน้า</span>
-            <span className="text-sm font-normal text-gray-400">Admin</span>
+            <span className="text-lg font-bold">หัวหน้า</span>
+            <span className="text-sm text-gray-400">{role}</span>
           </div>
         </div>
-        
-        <Link 
+
+        <Link
           href="/login"
-          className="flex items-center gap-4 px-4 py-2 text-[#FCA5A5] hover:text-red-400 transition-colors"
+          className="flex items-center gap-4 px-4 py-3 w-full rounded-xl text-[#FCA5A5] hover:bg-red-500/10 hover:text-red-400 transition-colors"
         >
           <LogOut size={24} />
           <span className="text-lg font-medium">Logout</span>

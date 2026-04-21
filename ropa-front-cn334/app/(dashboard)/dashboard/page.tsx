@@ -23,6 +23,19 @@ const mockData = [
   { id: 5, purpose: 'ติดต่อซัพพลายเออร์', status: 'approved', subject: 'Candidate', category: 'Email, Contact Name', legalBasis: 'Contract', sensitivity: 'Medium', retentionPeriod: '67 years' },
   { id: 6, purpose: 'บันทึกกล้องวงจรปิด', status: 'approved', subject: 'Visitor', category: 'Video Recording', legalBasis: 'Consent', sensitivity: 'Low', retentionPeriod: '1 year' },
   { id: 7, purpose: 'ส่งจดหมายข่าว', status: 'approved', subject: 'Subscriber', category: 'Email', legalBasis: 'Consent', sensitivity: 'High', retentionPeriod: '42 years' },
+  { id: 8, purpose: 'ระบบบัญชี', status: 'pending', subject: 'Employee', category: 'Bank Account', legalBasis: 'Legal Obligation', sensitivity: 'High', retentionPeriod: '10 years' },
+  { id: 9, purpose: 'รับสมัครงาน', status: 'approved', subject: 'Candidate', category: 'Resume', legalBasis: 'Consent', sensitivity: 'Medium', retentionPeriod: '2 years' },
+  { id: 10, purpose: 'แคมเปญโฆษณา', status: 'rejected', subject: 'Customer', category: 'Behavioral Data', legalBasis: 'Consent', sensitivity: 'Low', retentionPeriod: '1 year' },
+  { id: 11, purpose: 'วิจัยตลาด', status: 'approved', subject: 'Public', category: 'Demographics', legalBasis: 'Legitimate Interest', sensitivity: 'Medium', retentionPeriod: '3 years' },
+  { id: 12, purpose: 'บริการหลังการขาย', status: 'pending', subject: 'Customer', category: 'Order History', legalBasis: 'Contract', sensitivity: 'Low', retentionPeriod: '5 years' },
+  { id: 13, purpose: 'ระบบความปลอดภัย', status: 'approved', subject: 'Visitor', category: 'Access Log', legalBasis: 'Legitimate Interest', sensitivity: 'Medium', retentionPeriod: '1 year' },
+  { id: 14, purpose: 'สวัสดิการพนักงาน', status: 'approved', subject: 'Employee', category: 'Health Info', legalBasis: 'Contract', sensitivity: 'High', retentionPeriod: '5 years' },
+  { id: 15, purpose: 'วิเคราะห์ยอดขาย', status: 'rejected', subject: 'Partner', category: 'Financial Data', legalBasis: 'Contract', sensitivity: 'Medium', retentionPeriod: '7 years' },
+  { id: 16, purpose: 'จดหมายเวียนภายใน', status: 'approved', subject: 'Employee', category: 'Internal Email', legalBasis: 'Legitimate Interest', sensitivity: 'Low', retentionPeriod: '2 years' },
+  { id: 17, purpose: 'กิจกรรมเพื่อสังคม', status: 'pending', subject: 'Participant', category: 'Full Name', legalBasis: 'Consent', sensitivity: 'Low', retentionPeriod: '1 year' },
+  { id: 18, purpose: 'ปรับปรุงเว็บไซต์', status: 'approved', subject: 'Visitor', category: 'Usage Statistics', legalBasis: 'Legitimate Interest', sensitivity: 'Low', retentionPeriod: '6 months' },
+  { id: 19, purpose: 'อบรมสัมมนา', status: 'approved', subject: 'Attendee', category: 'Contact Details', legalBasis: 'Consent', sensitivity: 'Medium', retentionPeriod: '2 years' },
+  { id: 20, purpose: 'การจัดการสินทรัพย์', status: 'pending', subject: 'Employee', category: 'Asset Assignment', legalBasis: 'Contract', sensitivity: 'Low', retentionPeriod: '5 years' },
 ];
 
 const getStatusColor = (status: string) => {
@@ -45,14 +58,14 @@ const getSensitivityBadge = (level: string) => {
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col space-y-8">
+    <div className="flex flex-col h-[calc(100vh-80px)] space-y-8">
       {/* Page Header */}
-      <div>
+      <div className="flex-none">
         <h1 className="text-4xl font-bold text-gray-900 tracking-tight">ROPA - Record of Processing Activities</h1>
       </div>
 
       {/* Summary Cards */}
-      <div className="flex gap-6 w-full">
+      <div className="flex gap-6 w-full flex-none">
         <StatCard 
           title="Total Record" 
           value="1,200" 
@@ -84,7 +97,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="flex justify-between items-center bg-transparent gap-4">
+      <div className="flex justify-between items-center bg-transparent gap-4 flex-none">
         <div className="flex-1 relative">
           <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400" />
@@ -116,9 +129,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Data Table */}
-      <div className="bg-[#E5E7EB] rounded-3xl overflow-hidden shadow-sm border border-gray-200">
-        <table className="w-full text-left border-collapse">
-          <thead>
+      <div className="bg-[#E5E7EB] rounded-3xl overflow-auto shadow-sm border border-gray-200 flex-1">
+        <table className="w-full text-left border-collapse min-w-[1200px]">
+          <thead className="sticky top-0 bg-[#E5E7EB] z-10">
             <tr className="text-gray-600 font-semibold text-sm border-b border-gray-300">
               <th className="px-8 py-5">ID</th>
               <th className="px-6 py-5">Purpose</th>

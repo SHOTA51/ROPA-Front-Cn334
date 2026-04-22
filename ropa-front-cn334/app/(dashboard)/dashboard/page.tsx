@@ -305,7 +305,7 @@ export default function DashboardPage() {
     <div className="flex flex-col h-[calc(100vh-80px)] space-y-8">
       <div className="flex-none">
         <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
-          RoPA - Record of Processing Activities eeeee
+          RoPA - Record of Processing Activities eeeeeee
         </h1>
       </div>
 

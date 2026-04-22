@@ -3,19 +3,22 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Users, 
-  ClipboardList, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  Users,
+  ClipboardList,
+  BarChart3,
+  BookOpen,
   LogOut,
   UserCircle
 } from 'lucide-react';
 import { useRole } from '../lib/store';
+import { useAuth } from '../lib/AuthContext';
 
 const Sidebar = () => {
   const pathname = usePathname();
   const { role, permissions } = useRole();
+  const { user, logout } = useAuth();
 
   const menuItems = [
     { 
@@ -36,11 +39,17 @@ const Sidebar = () => {
       path: '/audit-logs',
       visible: permissions.sidebar.auditLogs
     },
-    { 
-      name: 'Analytics', 
-      icon: <BarChart3 size={24} />, 
+    {
+      name: 'Analytics',
+      icon: <BarChart3 size={24} />,
       path: '/analytics',
       visible: permissions.sidebar.analytics
+    },
+    {
+      name: 'Ropa',
+      icon: <BookOpen size={24} />,
+      path: '/ropa',
+      visible: permissions.sidebar.ropa,
     },
   ];
 
@@ -86,18 +95,19 @@ const Sidebar = () => {
             <UserCircle size={32} className="text-gray-400" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-bold">หัวหน้า</span>
+            <span className="text-lg font-bold">{user?.name || user?.username || '—'}</span>
             <span className="text-sm text-gray-400">{role}</span>
           </div>
         </div>
 
-        <Link
-          href="/login"
+        <button
+          type="button"
+          onClick={() => logout()}
           className="flex items-center gap-4 px-4 py-3 w-full rounded-xl text-[#FCA5A5] hover:bg-red-500/10 hover:text-red-400 transition-colors"
         >
           <LogOut size={24} />
           <span className="text-lg font-medium">Logout</span>
-        </Link>
+        </button>
       </div>
     </aside>
   );

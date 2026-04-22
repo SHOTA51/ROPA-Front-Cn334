@@ -6,13 +6,23 @@ import { X } from 'lucide-react';
 interface RecordDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  record: any;
+  record: Record<string, unknown> | null;
 }
 
-const Field = ({ label, value }: { label: string; value: string }) => (
+const display = (value: unknown): string => {
+  if (value === null || value === undefined || value === '') return '-';
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  if (typeof value === 'object') {
+    const obj = value as { name?: string };
+    return obj.name || JSON.stringify(value);
+  }
+  return String(value).replace(/_/g, ' ');
+};
+
+const Field = ({ label, value }: { label: string; value: unknown }) => (
   <div className="space-y-1">
     <p className="text-sm font-normal text-gray-500">{label}</p>
-    <p className="text-base font-medium text-gray-900">{value || 'ข้อมูล'}</p>
+    <p className="text-base font-medium text-gray-900 break-words">{display(value)}</p>
   </div>
 );
 
@@ -25,12 +35,14 @@ const SectionTitle = ({ title }: { title: string }) => (
 export default function RecordDetailModal({ isOpen, onClose, record }: RecordDetailModalProps) {
   if (!isOpen || !record) return null;
 
+  const r = record as Record<string, unknown>;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-[#E5E7EB] rounded-3xl w-full max-w-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         <div className="flex justify-between items-center px-8 py-6 bg-[#1e293b] text-white flex-none">
-          <h2 className="text-2xl font-bold">{record.purpose}</h2>
-          <button 
+          <h2 className="text-2xl font-bold truncate pr-4">{display(r.purpose)}</h2>
+          <button
             onClick={onClose}
             className="p-2 hover:bg-white/10 rounded-full transition-colors"
           >
@@ -40,28 +52,30 @@ export default function RecordDetailModal({ isOpen, onClose, record }: RecordDet
 
         <div className="px-10 py-8 space-y-8 overflow-y-auto flex-1 custom-scrollbar">
           <div className="space-y-6">
-            <SectionTitle title="รายละเอียดของผู้ลงบันทึก ROPA" />
+            <SectionTitle title="ข้อมูลทั่วไป" />
             <div className="grid grid-cols-2 gap-6">
-              <Field label="ชื่อ" value="ข้อมูล" />
-              <Field label="ที่อยู่" value="ข้อมูล" />
-              <Field label="Email" value="ข้อมูล" />
-              <Field label="เบอร์โทร" value="ข้อมูล" />
+              <Field label="Record Type" value={r.recordType} />
+              <Field label="Status" value={r.status} />
+              <Field label="Risk Level" value={r.riskLevel} />
+              <Field label="Department" value={r.department} />
+              <Field label="Created By" value={r.createdBy} />
+              <Field label="Updated By" value={r.updatedBy} />
             </div>
           </div>
 
           <div className="space-y-6">
             <SectionTitle title="ข้อมูลพื้นฐานและหมวดหมู่ข้อมูล" />
             <div className="grid grid-cols-2 gap-6">
-              <Field label="1. ชื่อเจ้าของข้อมูลส่วนบุคคล" value="ข้อมูล" />
-              <Field label="2. กิจกรรมประมวลผล" value="ข้อมูล" />
+              <Field label="1. ชื่อเจ้าของข้อมูลส่วนบุคคล" value={r.dataSubject} />
+              <Field label="2. กิจกรรมประมวลผล" value={r.processingActivity} />
               <div className="col-span-2">
-                <Field label="3. วัตถุประสงค์ของการประมวลผล" value={record.purpose} />
+                <Field label="3. วัตถุประสงค์ของการประมวลผล" value={r.purpose} />
               </div>
               <div className="col-span-2">
-                <Field label="4. ข้อมูลส่วนบุคคลที่จัดเก็บ" value={record.category} />
+                <Field label="4. ข้อมูลส่วนบุคคลที่จัดเก็บ" value={r.personalDataItems} />
               </div>
-              <Field label="5. หมวดหมู่ของข้อมูล" value="ข้อมูล" />
-              <Field label="6. ประเภทของข้อมูล" value="ข้อมูล" />
+              <Field label="5. หมวดหมู่ของข้อมูล" value={r.dataCategory} />
+              <Field label="6. ประเภทของข้อมูล" value={r.dataType} />
             </div>
           </div>
 
@@ -69,49 +83,58 @@ export default function RecordDetailModal({ isOpen, onClose, record }: RecordDet
             <SectionTitle title="การได้มาและฐานในการประมวลผล" />
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
-                <Field label="7. วิธีการได้มาซึ่งข้อมูล" value="ข้อมูล" />
+                <Field label="7. วิธีการได้มาซึ่งข้อมูล" value={r.collectionMethod} />
               </div>
-              <Field label="8. แหล่งที่มาจากเจ้าของข้อมูลส่วนบุคคลโดยตรง" value="ข้อมูล" />
-              <Field label="จากแหล่งอื่น" value="-" />
+              <Field label="จากเจ้าของข้อมูลโดยตรง" value={r.sourceDirect} />
+              <Field label="จากแหล่งอื่น" value={r.sourceIndirect} />
               <div className="col-span-2">
-                <Field label="9. ฐานในการประมวลผล" value={record.legalBasis} />
+                <Field label="9. ฐานในการประมวลผล" value={r.legalBasis} />
+              </div>
+              <div className="col-span-2">
+                <Field label="ความยินยอมของผู้เยาว์" value={r.minorConsent} />
               </div>
             </div>
           </div>
 
           <div className="space-y-6">
-            <SectionTitle title="การขอความยินยอมจากผู้เยาว์" />
+            <SectionTitle title="ผู้รับข้อมูลและผู้ประมวลผลภายนอก" />
             <div className="grid grid-cols-2 gap-6">
-              <Field label="อายุไม่เกิน 10 ปี" value="ไม่เกี่ยวข้อง" />
-              <Field label="อายุ 10 - 20 ปี" value="ไม่เกี่ยวข้อง" />
+              <div className="col-span-2">
+                <Field label="Recipient" value={r.recipient} />
+              </div>
+              <Field label="Data Processor" value={r.dataProcessor} />
+              <Field label="Processor Address" value={r.processorAddress} />
             </div>
           </div>
 
           <div className="space-y-6">
             <SectionTitle title="ส่งหรือโอนข้อมูลไปยังต่างประเทศ" />
             <div className="grid grid-cols-2 gap-6">
-              <Field label="มีการส่งหรือโอน (ระบุประเทศ)" value="ไม่มีการส่งหรือโอน" />
-              <Field label="บริษัทในเครือ (ระบุชื่อ)" value="-" />
-              <Field label="วิธีการโอนข้อมูล" value="-" />
-              <Field label="มาตรฐานการคุ้มครองข้อมูล" value="-" />
-              <div className="col-span-2">
-                <Field label="ข้อยกเว้นตามมาตรา 28" value="-" />
-              </div>
+              <Field label="มีการส่งหรือโอน" value={r.transferExists} />
+              <Field label="ประเทศปลายทาง" value={r.transferDestination} />
+              <Field label="บริษัทในเครือ" value={r.intraGroupTransfer} />
+              <Field label="วิธีการโอนข้อมูล" value={r.transferMethod} />
+              <Field label="มาตรฐานการคุ้มครองข้อมูล" value={r.destinationStandard} />
+              <Field label="ข้อยกเว้นตามมาตรา 28" value={r.article28Exception} />
             </div>
           </div>
 
           <div className="space-y-6">
             <SectionTitle title="นโยบายการเก็บรักษาและการเปิดเผย" />
             <div className="grid grid-cols-2 gap-6">
-              <Field label="ประเภทสื่อจัดเก็บ (Soft/Hard)" value="Soft / Hard (ข้อมูล)" />
-              <Field label="ระยะเวลาเก็บรักษา" value={record.retentionPeriod} />
-              <Field label="วิธีการเก็บรักษา" value="ข้อมูล" />
-              <Field label="สิทธิและวิธีการเข้าถึงข้อมูล" value="ข้อมูล" />
+              <Field label="ประเภทสื่อจัดเก็บ" value={r.storageType} />
+              <Field label="ระยะเวลาเก็บรักษา" value={r.retentionPeriod} />
               <div className="col-span-2">
-                <Field label="วิธีการลบหรือทำลาย" value="ข้อมูล" />
+                <Field label="วิธีการเก็บรักษา" value={r.storageMethod} />
               </div>
               <div className="col-span-2">
-                <Field label="13. การเปิดเผยที่ยกเว้นความยินยอม" value="ข้อมูล" />
+                <Field label="สิทธิและวิธีการเข้าถึงข้อมูล" value={r.exerciseOfRights} />
+              </div>
+              <div className="col-span-2">
+                <Field label="วิธีการลบหรือทำลาย" value={r.deletionMethod} />
+              </div>
+              <div className="col-span-2">
+                <Field label="การเปิดเผยที่ยกเว้นความยินยอม" value={r.disclosureExempt} />
               </div>
             </div>
           </div>
@@ -120,20 +143,31 @@ export default function RecordDetailModal({ isOpen, onClose, record }: RecordDet
             <SectionTitle title="สิทธิและมาตรการรักษาความปลอดภัย" />
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
-                <Field label="14. การปฏิเสธคำขอหรือการคัดค้าน" value="-" />
+                <Field label="การปฏิเสธคำขอหรือการคัดค้าน" value={r.rightsRejection} />
               </div>
-              <Field label="มาตรการเชิงองค์กร" value="ข้อมูล" />
-              <Field label="มาตรการเชิงเทคนิค" value="ข้อมูล" />
-              <Field label="มาตรการทางกายภาพ" value="ข้อมูล" />
-              <Field label="การควบคุมการเข้าถึงข้อมูล" value="ข้อมูล" />
-              <Field label="หน้าที่ความรับผิดชอบผู้ใช้" value="ข้อมูล" />
-              <Field label="มาตรการตรวจสอบย้อนหลัง" value="ข้อมูล" />
+              <Field label="มาตรการเชิงองค์กร" value={r.organizationalMeasures} />
+              <Field label="มาตรการเชิงเทคนิค" value={r.technicalMeasures} />
+              <Field label="มาตรการทางกายภาพ" value={r.physicalMeasures} />
+              <Field label="การควบคุมการเข้าถึงข้อมูล" value={r.accessControl} />
+              <Field label="หน้าที่ความรับผิดชอบผู้ใช้" value={r.userResponsibility} />
+              <Field label="มาตรการตรวจสอบย้อนหลัง" value={r.auditMeasure} />
             </div>
           </div>
+
+          {Boolean(r.rejectionReason) && (
+            <div className="space-y-6">
+              <SectionTitle title="Rejection" />
+              <div className="grid grid-cols-1 gap-6">
+                <Field label="Rejection Reason" value={r.rejectionReason} />
+                <Field label="Rejected At" value={r.rejectedAt} />
+                <Field label="Rejected By" value={r.rejectedBy} />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="px-8 py-5 bg-gray-200 border-t border-gray-300 flex justify-end flex-none">
-          <button 
+          <button
             onClick={onClose}
             className="px-10 py-2.5 bg-[#1e293b] text-white font-bold rounded-xl hover:bg-slate-700 transition-colors"
           >

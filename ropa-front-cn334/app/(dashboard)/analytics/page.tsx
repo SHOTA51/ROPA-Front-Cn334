@@ -367,7 +367,7 @@ export default function AnalyticsPage() {
     <div className="flex flex-col space-y-8 pb-10">
       <div>
         <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Analytics</h1>
-        <p className="text-lg text-gray-600 mt-1">Overview of ROPA records and compliance</p>
+        <p className="text-lg text-gray-600 mt-1">Overview of RoPA records and compliance</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5">

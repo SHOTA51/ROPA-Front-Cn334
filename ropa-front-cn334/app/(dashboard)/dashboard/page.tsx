@@ -305,7 +305,7 @@ export default function DashboardPage() {
     <div className="flex flex-col h-[calc(100vh-80px)] space-y-8">
       <div className="flex-none">
         <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
-          ROPA - Record of Processing Activities
+          RoPA - Record of Processing Activities
         </h1>
       </div>
 
@@ -457,7 +457,7 @@ export default function DashboardPage() {
             </button>
           )}
 
-          {/* {(role === 'Admin' || role === 'DataOwner') && (
+          {(role === 'Admin' || role === 'DataOwner') && (
             <button
               onClick={() => router.push('/ropa/new')}
               className="flex items-center gap-2 h-12 px-6 rounded-xl bg-[#0F172A] text-white font-medium hover:bg-slate-800 transition-colors"
@@ -465,7 +465,7 @@ export default function DashboardPage() {
               <Plus size={20} />
               <span>Create ROPA</span>
             </button>
-          )} */}
+          )}
         </div>
       </div>
 

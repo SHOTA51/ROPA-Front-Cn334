@@ -359,7 +359,7 @@ export default function RopaGuidePage() {
     <div className="flex flex-col space-y-8 pb-10">
       <div>
         <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
-          คู่มือการกรอก ROPA Form
+          คู่มือการกรอก RoPA Form
         </h1>
         <p className="text-lg text-gray-600 mt-1">
           Record of Processing Activities — บันทึกรายการกิจกรรมการประมวลผลข้อมูลส่วนบุคคล ตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) มาตรา 39
